@@ -7,6 +7,7 @@ import requests
 import json
 
 def GetRawTimetable(Url:str, Username: str,Password: str, Week: str):
+    # přihlášení a získávání tokenu
     headers = {"Content-Type": "application/x-www-form-urlencoded"}
     myobj = {
         'client_id':'ANDR',
@@ -22,6 +23,7 @@ def GetRawTimetable(Url:str, Username: str,Password: str, Week: str):
 
     token = response.json().get("access_token")
 
+    # získání rozvrhu v json formátu
     headers = {
         "Content-Type": "application/x-www-form-urlencoded",
         "Authorization": "Bearer " +str(token)
@@ -30,9 +32,14 @@ def GetRawTimetable(Url:str, Username: str,Password: str, Week: str):
     return requests.get(Url + "/api/3/timetable/actual?" + Week, headers=headers,stream=False)
 
 
+
+'''
+    Možná v budoucnu:
+    def GetTimetable(response: dict,Day: int):
+'''
 def GetTimetable(Url:str, Username: str,Password: str, Week: str, Day: int):
     response = GetRawTimetable(Url,Username,Password,Week)
-
+    
     print("Status Code", response.status_code)
 
     jsondata = response.json()
@@ -43,7 +50,8 @@ def GetTimetable(Url:str, Username: str,Password: str, Week: str, Day: int):
     jsonteachers = jsondata.get("Teachers")
     jsonrooms = jsondata.get("Rooms")
 
-# Získání dat z hodin
+    # Získání dat z hodin
+
     print("Hodiny:")
     output = {}
     for i in range(0,len(jsonclass)):
@@ -78,7 +86,14 @@ def GetTimetable(Url:str, Username: str,Password: str, Week: str, Day: int):
     return output
 
 
+'''
+    Možná v budoucnu:
+    def GetFullTimetable(response:dict):
+'''
+
 def GetFullTimetable(Url:str, Username: str,Password: str, Week: str):
+
+
     response = GetRawTimetable(Url,Username,Password,Week)
 
     print("Status Code", response.status_code)
