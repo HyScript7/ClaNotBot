@@ -1,8 +1,8 @@
 
 # -*- coding: latin-1 -*-
 
-from codecs import ascii_decode
-from urllib import response
+# Bakalari API Wrapper
+
 import requests
 import json
 
