@@ -6,8 +6,7 @@
 import requests
 import json
 
-
-def GetTimetable(Url:str, Username: str,Password: str, Week: str, Day: int):
+def GetRawTimetable(Url:str, Username: str,Password: str, Week: str):
     headers = {"Content-Type": "application/x-www-form-urlencoded"}
     myobj = {
         'client_id':'ANDR',
@@ -28,13 +27,15 @@ def GetTimetable(Url:str, Username: str,Password: str, Week: str, Day: int):
         "Authorization": "Bearer " +str(token)
         }
 
-    response = requests.get(Url + "/api/3/timetable/actual?" + Week, headers=headers,stream=False)
+    return requests.get(Url + "/api/3/timetable/actual?" + Week, headers=headers,stream=False)
+
+
+def GetTimetable(Url:str, Username: str,Password: str, Week: str, Day: int):
+    response = GetRawTimetable(Url,Username,Password,Week)
 
     print("Status Code", response.status_code)
 
     jsondata = response.json()
-    with open("developer.json", "w", encoding='utf8') as write_file:
-        json.dump(jsondata,write_file, indent=2, ensure_ascii=False)
 
     jsonday = jsondata.get("Days")[Day-1]
     jsonclass = jsonday.get("Atoms")
@@ -77,4 +78,56 @@ def GetTimetable(Url:str, Username: str,Password: str, Week: str, Day: int):
     return output
 
 
+def GetFullTimetable(Url:str, Username: str,Password: str, Week: str):
+    response = GetRawTimetable(Url,Username,Password,Week)
 
+    print("Status Code", response.status_code)
+
+    jsondata = response.json()
+
+    jsondays = jsondata.get("Days")
+    
+    jsonsubjects = jsondata.get("Subjects")
+    jsonteachers = jsondata.get("Teachers")
+    jsonrooms = jsondata.get("Rooms")
+
+# Získání dat z hodin
+    output = {}
+    for d in range(0,5):
+        jsonclass = jsondays[d].get("Atoms")
+        classes = {}
+        for i in range(0,len(jsonclass)):
+            subname = "Volno"
+            teachname = "Nikdo"
+            roomnum = "000"
+            # Název hodiny
+            subject = jsonclass[i].get("SubjectId")
+            for a in range(0,len(jsonsubjects)):
+                if jsonsubjects[a].get("Id") == subject:
+                    
+                    subname = jsonsubjects[a].get("Name")
+
+
+
+            # Jméno učitele
+            teacher = jsonclass[i].get("TeacherId")
+            for a in range(0,len(jsonteachers)):
+                if jsonteachers[a].get("Id") == teacher:
+                    teachname = jsonteachers[a].get("Name")
+
+            # Místnost
+            room = jsonclass[i].get("RoomId")
+            for a in range(0,len(jsonrooms)):
+                if jsonrooms[a].get("Id") == room:
+                    roomnum = jsonrooms[a].get("Abbrev")
+            
+            classes[i+1] = {"subject": subname, "teacher": teachname, "room": roomnum}
+
+        days = ["po","ut","st","ct","pa"]
+
+        output[days[d]] = classes
+
+    
+
+    return output
+        
