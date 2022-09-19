@@ -18,7 +18,6 @@ def GetRawTimetable(Url:str, Username: str,Password: str, Week: str):
     response = requests.post(Url + "/api/login", headers=headers ,data= myobj)
 
     print("Status Code", response.status_code)
-    print("JSON Response ", response.json().get("access_token"))
 
 
     token = response.json().get("access_token")
