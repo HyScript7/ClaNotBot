@@ -124,7 +124,7 @@ def GetTimetable(Url:str, Token:str, Week: str, Day: int):
     def GetFullTimetable(response:dict):
 '''
 
-def GetFullTimetable(Urt:str, Token, Week: str):
+def GetFullTimetable(Url:str, Token, Week: str):
 
 
     response = GetRawTimetable(Token,Week)
