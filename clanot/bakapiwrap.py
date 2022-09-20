@@ -52,7 +52,7 @@ def RefreshToken(Url:str, Token:str):
     return {'token': str(response.json().get("access_token")), "refresh": str(response.json().get("refresh_token"))}
 
 
-def GetRawTimetable(Token:str, Week: str):
+def GetRawTimetable(Urt:str, Token:str, Week: str):
     # přihlášení a získávání tokenu
     
 
@@ -70,7 +70,7 @@ def GetRawTimetable(Token:str, Week: str):
     Možná v budoucnu:
     def GetTimetable(response: dict,Day: int):
 '''
-def GetTimetable(Token:str, Week: str, Day: int):
+def GetTimetable(Url:str, Token:str, Week: str, Day: int):
     response = GetRawTimetable(Token,Week)
     
     print("Status Code", response.status_code)
@@ -124,7 +124,7 @@ def GetTimetable(Token:str, Week: str, Day: int):
     def GetFullTimetable(response:dict):
 '''
 
-def GetFullTimetable(Token, Week: str):
+def GetFullTimetable(Urt:str, Token, Week: str):
 
 
     response = GetRawTimetable(Token,Week)
