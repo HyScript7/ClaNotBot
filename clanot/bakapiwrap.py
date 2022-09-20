@@ -35,7 +35,7 @@ def RefreshToken(Url:str, Token:str):
     print("Status Code", response.status_code)
 
 
-    return response.json().get("access_token")
+    return {'token': str(response.json().get("access_token")), "refresh": str(response.json().get("refresh_token"))}
 
 
 def GetRawTimetable(Token:str, Week: str):
