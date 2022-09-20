@@ -6,8 +6,8 @@
 import requests
 import json
 
-def GetRawTimetable(Url:str, Username: str,Password: str, Week: str):
-    # přihlášení a získávání tokenu
+
+def Login(Url:str, Username:str, Password:str):
     headers = {"Content-Type": "application/x-www-form-urlencoded"}
     myobj = {
         'client_id':'ANDR',
@@ -20,12 +20,32 @@ def GetRawTimetable(Url:str, Username: str,Password: str, Week: str):
     print("Status Code", response.status_code)
 
 
-    token = response.json().get("access_token")
+    return {'token': str(response.json().get("access_token")), "refresh": str(response.json().get("refresh_token"))}
+
+def RefreshToken(Url:str, Token:str):
+
+    headers = {"Content-Type": "application/x-www-form-urlencoded"}
+    myobj = {
+        'client_id':'ANDR',
+        'grant_type':'refresh_token',
+        'refresh_token': str(Token)
+        }
+    response = requests.post(Url + "/api/login", headers=headers ,data= myobj)
+
+    print("Status Code", response.status_code)
+
+
+    return response.json().get("access_token")
+
+
+def GetRawTimetable(Token:str, Week: str):
+    # přihlášení a získávání tokenu
+    
 
     # získání rozvrhu v json formátu
     headers = {
         "Content-Type": "application/x-www-form-urlencoded",
-        "Authorization": "Bearer " +str(token)
+        "Authorization": "Bearer " +str(Token)
         }
 
     return requests.get(Url + "/api/3/timetable/actual?" + Week, headers=headers,stream=False)
@@ -36,8 +56,8 @@ def GetRawTimetable(Url:str, Username: str,Password: str, Week: str):
     Možná v budoucnu:
     def GetTimetable(response: dict,Day: int):
 '''
-def GetTimetable(Url:str, Username: str,Password: str, Week: str, Day: int):
-    response = GetRawTimetable(Url,Username,Password,Week)
+def GetTimetable(Token:str, Week: str, Day: int):
+    response = GetRawTimetable(Token,Week)
     
     print("Status Code", response.status_code)
 
@@ -90,10 +110,10 @@ def GetTimetable(Url:str, Username: str,Password: str, Week: str, Day: int):
     def GetFullTimetable(response:dict):
 '''
 
-def GetFullTimetable(Url:str, Username: str,Password: str, Week: str):
+def GetFullTimetable(Token, Week: str):
 
 
-    response = GetRawTimetable(Url,Username,Password,Week)
+    response = GetRawTimetable(Token,Week)
 
     print("Status Code", response.status_code)
 
