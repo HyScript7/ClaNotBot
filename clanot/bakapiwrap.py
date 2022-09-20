@@ -118,7 +118,7 @@ def GetTimetable(response:dict, Week: str, Day: int):
 
 
 def GetFullTimetable(response:dict, Week: str):
-    
+
     print("Status Code", response.status_code)
 
     jsondata = response.json()
@@ -168,4 +168,3 @@ def GetFullTimetable(response:dict, Week: str):
     
 
     return output
-        
