@@ -7,6 +7,12 @@ import requests
 import json
 
 
+'''
+Získání tokenu pomocí přihlašovacích údajů.
+
+POZOR!
+    Vrací data v dictonary! Použijte ".get()" pro získání dat
+'''
 def Login(Url:str, Username:str, Password:str):
     headers = {"Content-Type": "application/x-www-form-urlencoded"}
     myobj = {
@@ -22,6 +28,14 @@ def Login(Url:str, Username:str, Password:str):
 
     return {'token': str(response.json().get("access_token")), "refresh": str(response.json().get("refresh_token"))}
 
+
+'''
+Získání tokenu z refresh tokenu
+    Refresh token vyprší přibližně za 1 měsíc, po vypršení použijte "Login()"
+
+POZOR!
+    Vrací data v dictonary! Použijte ".get()" pro získání dat
+'''
 def RefreshToken(Url:str, Token:str):
 
     headers = {"Content-Type": "application/x-www-form-urlencoded"}
