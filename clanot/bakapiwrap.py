@@ -52,7 +52,7 @@ def RefreshToken(Url:str, Token:str):
     return {'token': str(response.json().get("access_token")), "refresh": str(response.json().get("refresh_token"))}
 
 
-def GetRawTimetable(Urt:str, Token:str, Week: str):
+def GetRawTimetable(Url:str, Token:str, Week: str):
     # přihlášení a získávání tokenu
     
 
