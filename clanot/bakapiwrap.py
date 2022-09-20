@@ -67,8 +67,7 @@ def GetRawTimetable(Urt:str, Token:str, Week: str):
 
 
 
-def GetTimetable(Url:str, Token:str, Week: str, Day: int):
-    response = GetRawTimetable(Token,Week)
+def GetTimetable(response:dict, Week: str, Day: int):
     
     print("Status Code", response.status_code)
 
@@ -118,11 +117,8 @@ def GetTimetable(Url:str, Token:str, Week: str, Day: int):
 
 
 
-def GetFullTimetable(Url:str, Token, Week: str):
-
-
-    response = GetRawTimetable(Token,Week)
-
+def GetFullTimetable(response:dict, Week: str):
+    
     print("Status Code", response.status_code)
 
     jsondata = response.json()
