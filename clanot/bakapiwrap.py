@@ -66,10 +66,7 @@ def GetRawTimetable(Urt:str, Token:str, Week: str):
 
 
 
-'''
-    Možná v budoucnu:
-    def GetTimetable(response: dict,Day: int):
-'''
+
 def GetTimetable(Url:str, Token:str, Week: str, Day: int):
     response = GetRawTimetable(Token,Week)
     
@@ -119,10 +116,7 @@ def GetTimetable(Url:str, Token:str, Week: str, Day: int):
     return output
 
 
-'''
-    Možná v budoucnu:
-    def GetFullTimetable(response:dict):
-'''
+
 
 def GetFullTimetable(Url:str, Token, Week: str):
 
