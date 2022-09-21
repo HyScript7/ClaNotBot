@@ -70,8 +70,11 @@ def GetRawTimetable(Url:str, Token:str, Week: str):
 def GetTimetable(response:dict, Week: str, Day: int):
     
     print("Status Code", response.status_code)
+    
 
     jsondata = response.json()
+
+    print(jsondata)
 
     jsonday = jsondata.get("Days")[Day-1]
     jsonclass = jsonday.get("Atoms")

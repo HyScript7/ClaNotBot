@@ -3,6 +3,7 @@ __pycache__/
 .obsidian/
 *.py[cod]
 *$py.class
+test.py
 
 # C extensions
 *.so
