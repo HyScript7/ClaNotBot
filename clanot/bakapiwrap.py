@@ -61,13 +61,9 @@ def GetRawTimetable(Url:str, Token:str, Week: str):
         "Content-Type": "application/x-www-form-urlencoded",
         "Authorization": "Bearer " +str(Token)
         }
-<<<<<<< HEAD
-    response = requests.get(Url + "/api/3/timetable/actual?" + Week, headers=headers,stream=False).json().json() 
+    response = requests.get(Url + "/api/3/timetable/actual?" + Week, headers=headers,stream=False).json()
     return response
-=======
 
-    return requests.get(Url + "/api/3/timetable/actual?" + Week, headers=headers,stream=False)
->>>>>>> parent of 5380395 (Broken af)
 
 
 
