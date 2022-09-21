@@ -8,9 +8,10 @@ import json
 
 
 '''
-Returns the access and refresh tokens in a Dict object
+Získání tokenu pomocí přihlašovacích údajů.
 
-Use .get("token") and .get("refresh") to get specific tokens.
+POZOR!
+    Vrací data v dictonary! Použijte ".get()" pro získání dat
 '''
 def Login(Url:str, Username:str, Password:str):
     headers = {"Content-Type": "application/x-www-form-urlencoded"}
@@ -21,6 +22,9 @@ def Login(Url:str, Username:str, Password:str):
         'password':Password
         }
     response = requests.post(Url + "/api/login", headers=headers ,data= myobj)
+
+    print("Status Code", response.status_code)
+
 
     return {'token': str(response.json().get("access_token")), "refresh": str(response.json().get("refresh_token"))}
 
@@ -33,6 +37,7 @@ POZOR!
     Vrací data v dictonary! Použijte ".get()" pro získání dat
 '''
 def RefreshToken(Url:str, Token:str):
+
     headers = {"Content-Type": "application/x-www-form-urlencoded"}
     myobj = {
         'client_id':'ANDR',
@@ -48,23 +53,39 @@ def RefreshToken(Url:str, Token:str):
 
 
 def GetRawTimetable(Url:str, Token:str, Week: str):
+    # přihlášení a získávání tokenu
+    
+
     # získání rozvrhu v json formátu
     headers = {
         "Content-Type": "application/x-www-form-urlencoded",
         "Authorization": "Bearer " +str(Token)
         }
+<<<<<<< HEAD
     response = requests.get(Url + "/api/3/timetable/actual?" + Week, headers=headers,stream=False).json().json() 
     return response
+=======
+
+    return requests.get(Url + "/api/3/timetable/actual?" + Week, headers=headers,stream=False)
+>>>>>>> parent of 5380395 (Broken af)
 
 
 
 
-def GetTimetable(response:dict, Week: str, Day: int): 
-    jsonday = response.get("Days")[Day-1]
+def GetTimetable(response:dict, Week: str, Day: int):
+    
+    print("Status Code", response.status_code)
+    
+
+    jsondata = response.json()
+
+    print(jsondata)
+
+    jsonday = jsondata.get("Days")[Day-1]
     jsonclass = jsonday.get("Atoms")
-    jsonsubjects = response.get("Subjects")
-    jsonteachers = response.get("Teachers")
-    jsonrooms = response.get("Rooms")
+    jsonsubjects = jsondata.get("Subjects")
+    jsonteachers = jsondata.get("Teachers")
+    jsonrooms = jsondata.get("Rooms")
 
     # Získání dat z hodin
 
@@ -108,15 +129,15 @@ def GetFullTimetable(response:dict, Week: str):
 
     print("Status Code", response.status_code)
 
-    response = response.json()
+    jsondata = response.json()
 
-    jsondays = response.get("Days")
+    jsondays = jsondata.get("Days")
     
-    jsonsubjects = response.get("Subjects")
-    jsonteachers = response.get("Teachers")
-    jsonrooms = response.get("Rooms")
+    jsonsubjects = jsondata.get("Subjects")
+    jsonteachers = jsondata.get("Teachers")
+    jsonrooms = jsondata.get("Rooms")
 
-    # Získání dat z hodin
+# Získání dat z hodin
     output = {}
     for d in range(0,5):
         jsonclass = jsondays[d].get("Atoms")
@@ -131,6 +152,8 @@ def GetFullTimetable(response:dict, Week: str):
                 if jsonsubjects[a].get("Id") == subject:
                     
                     subname = jsonsubjects[a].get("Name")
+
+
 
             # Jméno učitele
             teacher = jsonclass[i].get("TeacherId")
@@ -149,4 +172,7 @@ def GetFullTimetable(response:dict, Week: str):
         days = ["po","ut","st","ct","pa"]
 
         output[days[d]] = classes
+
+    
+
     return output
