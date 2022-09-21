@@ -53,7 +53,7 @@ def GetRawTimetable(Url:str, Token:str, Week: str):
         "Content-Type": "application/x-www-form-urlencoded",
         "Authorization": "Bearer " +str(Token)
         }
-    response = requests.get(Url + "/api/3/timetable/actual?" + Week, headers=headers,stream=False).json() 
+    response = requests.get(Url + "/api/3/timetable/actual?" + Week, headers=headers,stream=False).json().json() 
     return response
 
 
