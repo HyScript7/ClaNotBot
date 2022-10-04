@@ -1,8 +1,8 @@
 
 
 
-def Gettoday(URL:str):
+def GetToday(URL:str):
     pass
 
-def Getnext(URL:str):
+def GetNext(URL:str):
     pass
