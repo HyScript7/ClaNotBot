@@ -1,12 +1,5 @@
+from bs4 import BeautifulSoup
 import requests
-from bs4 import BeautifulSoup
-
-
-from bs4 import BeautifulSoup
-from urllib.request import Request, urlopen
-import re
-
-
 
 def GetToday(URL:str):
 
