@@ -10,7 +10,7 @@ import re
 
 def GetToday(URL:str):
 
-    req= requests.get('http://jidelna.gasos-ro.cz')
+    req= requests.get(URL)
 
     soup = BeautifulSoup(req.text, "html.parser")
 
@@ -19,8 +19,10 @@ def GetToday(URL:str):
     return {"1": first[0].get_text().strip(), "2": first[1].get_text().strip()}
 
 def GetNext(URL:str):
-    pass
+    req= requests.get(URL)
 
+    soup = BeautifulSoup(req.text, "html.parser")
 
+    first = soup.find_all("div",attrs={"class":"jidelnicekDen"})[1].find_all("div", attrs={"class":"column jidelnicekItem"})
 
-print(GetToday("https://jidelna.gasos-ro.cz/"))
+    return {"1": first[0].get_text().strip(), "2": first[1].get_text().strip()}
