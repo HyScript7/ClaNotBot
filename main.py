@@ -4,24 +4,26 @@ from decouple import config
 import time
 import datetime
 from clanot import bakapiwrap as baka
+from clanot import bakapi # Rewrite wrapper using classes and async functions
 
-GUILDID = 856229875824066630
+GUILDID = discord.Object(id=1019661946590609538)
 
 # Set tokens and stuff from a .env file
 bakauser = str(config("BAKAUSER"))
 bakapass = str(config("BAKAPASS"))
+#TODO: Change token and baka auth to use the rewrite token class
 bakatoken = None # If type of bakatoken is None, it means we haven't been given a login token yet.
 bakarefresh = None
 bakatime = 0 # Keeps track of when the token was last updated.
 bakamaxtime = 300 # 5 Minutes before needing re-auth
 token = str(config("TOKEN")) # Bot token
 
-#TODO: Refresh instead of relogging if it expires!!!
+#TODO: Remove this function once bakapi is rewritten, as this will be handled within the token class function
 async def bapitok():
     global bakatoken, bakarefresh, bakatime
     if round(time.time())-bakatime <= bakamaxtime:
         return
-    if type(bakarefresh) is None:
+    if bakarefresh is None:
         x = baka.Login("https://sbakalari.gasos-ro.cz", bakauser, bakapass)
     else:
         x = baka.Refresh("https://sbakalari.gasos-ro.cz", bakarefresh)
@@ -29,7 +31,14 @@ async def bapitok():
     bakatoken = x.get("token")
     bakarefresh = x.get("refresh")
 
-# This is the custom bot class, which we made by inheriting from discord's Client
+async def parseDate(stamp: int):
+    #TODO: Actually parse the date from the timestamp
+    year = "2022"
+    month = "01"
+    day = "01"
+    weekdaynum = 1 # Monday
+    return (f"{year}, {month}, {day}", weekdaynum)
+
 class appclient(discord.Client):
     def __init__(self):
         super().__init__(intents=discord.Intents.default())
@@ -41,13 +50,13 @@ class appclient(discord.Client):
         if not self.synced:
             await tree.sync(guild = GUILDID)
             self.synced = True
-        bakatoken = baka.login(bakauser, bakapass)
+        await bapitok()
         print(f"Logged into Bakalari using the username {bakauser} - Token and Password Hidden, use debugger to view in variables")
         print(f"We have logged in as {self.user}.")
 
 # Define our client/bot
 client = appclient()
-tree = app_commands.CommandTree(client) # the tree is the list of slash commands our bot has
+tree = app_commands.CommandTree(client)
 
 """
 # Command Template
@@ -58,18 +67,13 @@ async def _test(interaction: discord.Interaction, name: str):
 
 @tree.command(name = "schedule", description="Sends today's time schedule", guild=GUILDID)
 async def _schedule(interaction: discord.Interaction):
-    Class = "1.I" #TODO: Make this be fetched automaticaly in the API Wrapper
-    Group = "Placeholder" #TODO: Make some student group resolution in the wrapper for the API wrapper.
     # Set the current week and day
-    week = "2022-09-20"
-    day = 2 # 1 - 5 (Mo - Fr)
-    e = discord.Embed(colour=discord.Colour(int('006B76', 16)),
-                      timestamp=time.time())
-    e.author = f"(ClaNot) {Class}  {Group}"
-    #! Update function call, get tokens on init
-    timeschedule = baka.GetTimetable("https://sbakalari.gasos-ro.cz", bakauser, bakapass, week, day)
-    for i in timeschedule:
-        e.add_field(timeschedule[i]["subject"], f"{timeschedule[i]['room']} **{timeschedule[i]['teacher']}**")
+    week, day = await parseDate(time.time())
+    e = discord.Embed(colour=discord.Colour(int('5555FF', 16)))
+    await bapitok()
+    timeschedule = baka.GetTimetable(baka.GetRawTimetable("https://sbakalari.gasos-ro.cz", bakatoken, week), week, day)
+    for y, i in enumerate(timeschedule):
+        e.add_field(name=f'{y+1}. {timeschedule[i]["subject"]}', value=f"Učebna {timeschedule[i]['room']}\n{timeschedule[i]['teacher']}")
     await interaction.response.send_message(embed=e)
 
 # Run the bot
