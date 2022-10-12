@@ -2,6 +2,7 @@
 # -*- coding: latin-1 -*-
 
 # Bakalari API Wrapper
+#! DO NOT DELETE - Keep for reference and use in non-async projects.
 
 import requests
 
