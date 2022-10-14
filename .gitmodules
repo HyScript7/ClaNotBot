@@ -1,0 +1,3 @@
+[submodule "BakaAPI"]
+	path = BakaAPI
+	url = https://github.com/IT-Gasos-ro/BakaAPI.git
