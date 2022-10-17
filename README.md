@@ -40,3 +40,8 @@ Stopping and removing:
 ```bash
 docker-compose down
 ```
+
+## License & Copyright
+
+ClaNotBot is licensed under MIT License
+Copyright (c) 2022 HyScript7 & mobilex1122

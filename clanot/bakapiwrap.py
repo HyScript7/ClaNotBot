@@ -1,3 +1,14 @@
+#        _                   _   
+#    ___| | __ _ _ __   ___ | |_ 
+#   / __| |/ _` | '_ \ / _ \| __|
+#  | (__| | (_| | | | | (_) | |_ 
+#   \___|_|\__,_|_| |_|\___/ \__|
+#
+# Version: 2.1
+# Authors: HyScript7, Mobilex
+# License: MIT License
+# Copyright (c) 2022 HyScript7 & mobilex1122
+#
 
 # -*- coding: latin-1 -*-
 
