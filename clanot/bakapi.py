@@ -4,8 +4,10 @@
 #  | (__| | (_| | | | | (_) | |_ 
 #   \___|_|\__,_|_| |_|\___/ \__|
 #
-# Version: 2.0
+# Version: 2.1
 # Authors: HyScript7, Mobilex
+# License: MIT License
+# Copyright (c) 2022 HyScript7 & mobilex1122
 #
 
 import requests
@@ -61,7 +63,8 @@ class token():
 class timetable():
     """bakapiwrapper timetable class
     This class handles timetable fetching for a specific day or week.
-    To fetch raw json data, use timetable.fetchRawWeek(authtoken, "year, month, day")
+    To fetch raw json data, use timetable.fetchTimetable(authtoken, "year, month, day")
+    To convert a date or timestamp into an acceptable format, use parseFromDate(Year, Month, Day) or parseFromTimestamp(UnixTimestamp), both will return a tuple consisting of the week and the day of the week.
     """
     def __init__(self, url: str) -> None:
         self.url = url
@@ -77,7 +80,7 @@ class timetable():
             day = "0" + str(day)
         week_day = dt.weekday()
         return (f"{year}, {month}, {day}", week_day)
-    async def parseFromDate(self, year: int, month: int, day: int):
+    async def parseFromDate(self, year: int, month: int, day: int) -> str:
         dt = datetime.datetime(year, month, day)
         year = dt.year
         month = dt.month
@@ -86,10 +89,30 @@ class timetable():
         day = dt.day
         week_day = dt.weekday()
         return (f"{year}, {month}, {day}", week_day)
-    async def fetchRawWeek(self, Token: token, week: str):
-        # TODO: Rename this function to fetchTimetable()
+    async def fetchTimetable(self, Token: token, week: str) -> dict:
         headers = {"Content-Type": "application/x-www-form-urlencoded","Authorization": "Bearer " + await Token.get()}
         return requests.get(self.url + "/api/3/timetable/actual?" + week, headers=headers,stream=False).json()
-    async def parseTimetable(self, data: dict):
-        #TODO: Port function GetTimetable() from bakapiwrap
-        pass
+    async def parseTimetable(self, data: dict, day: int) -> list:
+        #! Needs to be tested!
+        #TODO: Change the output format
+        days = data["Days"][day-1]
+        classes = days["Atoms"]
+        subjects = data["Subjects"]
+        teachers = data["Teachers"]
+        rooms = data["Rooms"]
+        timetable = []
+        for i in classes:
+            subject = i["SubjectId"]
+            for y in subjects:
+                if y["Id"] == subject:
+                    subject = y["Name"]
+            teacher = i["TeacherId"]
+            for y in teachers:
+                if y["Id"] == teacher:
+                    teacher = y["Name"]
+            room = i["RoomId"]
+            for y in rooms:
+                if y["Id"] == room:
+                    room = y["Abbrev"]
+            timetable.append({"subject": subject, "teacher": teacher, "room": room})
+        return timetable
