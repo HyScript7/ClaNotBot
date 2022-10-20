@@ -26,3 +26,21 @@ class Homework():
         json_data= json.dumps(json_object, indent=4)
         with open(self.path, "w") as outfile:
             outfile.write(json_data)
+
+    async def get(self, time:str) -> None:
+        json_object = {"test":"test"}
+        if exists(self.path):
+            with open(self.path, 'r') as openfile:
+                json_object = json.load(openfile)
+ 
+
+        return json_object[time]
+
+    async def list(self) -> None:
+        json_object = {"test":"test"}
+        if exists(self.path):
+            with open(self.path, 'r') as openfile:
+                json_object = json.load(openfile)
+ 
+
+        return json_object.keys()
