@@ -68,8 +68,11 @@ class timetable():
     """
     def __init__(self, url: str) -> None:
         self.url = url
-        pass
+
     async def parseFromTimestamp(self, time: int) -> str:
+        """
+        Returns the provided timestamp as something that can be used in the fetchTimetable function
+        """
         dt = datetime.datetime.fromtimestamp(time)
         year = dt.year
         month = dt.month
@@ -80,7 +83,11 @@ class timetable():
             day = "0" + str(day)
         week_day = dt.weekday()
         return (f"{year}, {month}, {day}", week_day)
+
     async def parseFromDate(self, year: int, month: int, day: int) -> str:
+        """
+        Returns the provided date as something that can be used in the fetchTimetable function
+        """
         dt = datetime.datetime(year, month, day)
         year = dt.year
         month = dt.month
@@ -89,10 +96,18 @@ class timetable():
         day = dt.day
         week_day = dt.weekday()
         return (f"{year}, {month}, {day}", week_day)
+
     async def fetchTimetable(self, Token: token, week: str) -> dict:
+        """
+        Returns the response from the API as json
+        """
         headers = {"Content-Type": "application/x-www-form-urlencoded","Authorization": "Bearer " + await Token.get()}
         return requests.get(self.url + "/api/3/timetable/actual?" + week, headers=headers,stream=False).json()
+
     async def parseTimetable(self, data: dict, day: int) -> list:
+        """
+        Parses the timetable from the provided json data
+        """
         #! Needs to be tested!
         #TODO: Change the output format
         days = data["Days"][day-1]
